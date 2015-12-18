@@ -8,8 +8,9 @@
     </head>
     <body ng-app="app">
         <div ng-controller="MsgCtrl">
+            <input type="text" ng-model="search_title" placeholder="Search"/>
             <ul>
-                <li ng-repeat="m in msg">
+                <li ng-repeat="m in msg | filter:search_title | orderBy:'title'">
                    {{ m.title }}
 
                    <a href="#" ng-click="delete(m.id)">Delete</a>
@@ -17,11 +18,15 @@
                 </li>
             </ul>
 
+            <hr>
+            Tambah Data
             <input type="text" ng-model="create.title">
-            <button type="submit" ng-click="formsubmit()"> Submit </button>
+            <button type="submit" ng-click="formsubmit()"> Tambah </button>
 
+            <hr>
+            Edit Data
             <input type="text" ng-model="editc.title">
-            <button type="submit" ng-click="editsubmit(editc.id)"> Submit </button>
+            <button type="submit" ng-click="editsubmit(editc.id)"> Simpan </button>
         </div>
 
     <script>
@@ -84,6 +89,7 @@
             $scope.editsubmit = function($id) {
             $http.post('<?=base_url();?>index.php/msg/update/' + $id, { data: $scope.editc })
                 .success(function(data, status, headers, config) {
+                    $scope.editc.title = '';
                     $scope.msg = data;
                 });
             };
@@ -91,6 +97,7 @@
             $scope.formsubmit = function() {
             $http.post('<?=base_url();?>index.php/msg/create', { data: $scope.create })
                 .success(function(data, status, headers, config) {
+                    $scope.create.title = '';
                     $scope.msg = data;
                 });
             };
